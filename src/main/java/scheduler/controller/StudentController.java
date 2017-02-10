@@ -1,8 +1,6 @@
 package main.java.scheduler.controller;
 
 import main.java.scheduler.model.Student;
-import net.proselyte.bookmanager.model.Book;
-import net.proselyte.bookmanager.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
