@@ -2,47 +2,37 @@ package main.java.scheduler.service;
 
 import main.java.scheduler.dao.StudentDAO;
 import main.java.scheduler.model.Student;
+import main.java.scheduler.service.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class StudentServiceImpl implements StudentService {
-    private StudentDAO studentDAO;
 
-    public void setStudentDAO(StudentDAO studentDAO) {
-        this.studentDAO = studentDAO;
+    @Autowired
+    private StudentDAO studentDao;
+
+    @Autowired
+    private RoleDao roleDao;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Override
+    public void save(Student student) {
+        student.setPassword(bCryptPasswordEncoder.encode(student.getPassword()));
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleDao.getOne(1L));
+        student.setRoles(roles);
+        studentDao.save(student);
     }
 
     @Override
-    @Transactional
-    public void addStudent(Student student) {
-        this.studentDAO.addStudent(student);
-    }
-
-    @Override
-    @Transactional
-    public void updateStudent(Student student) {
-        this.studentDAO.updateStudent(student);
-    }
-
-    @Override
-    @Transactional
-    public void removeStudent(int id) {
-        this.studentDAO.removeStudent(id);
-    }
-
-    @Override
-    @Transactional
-    public Student getStudentById(int id) {
-        return this.studentDAO.getStudentById(id);
-    }
-
-    @Override
-    @Transactional
-    public List<Student> listStudents() {
-        return this.studentDAO.listStudents();
+    public Student findByLogin(String login) {
+        return studentDao.findByLogin(login);
     }
 }
-
